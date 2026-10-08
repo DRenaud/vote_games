@@ -25,3 +25,12 @@ Le serveur refuse tout vote au-delà de 30 jeux, même si le front est contourn�
 
 Les votes sont stockés dans un fichier JSON : l'hébergeur doit fournir un disque
 persistant, sinon les votes disparaissent à chaque redéploiement.
+
+## Docker
+
+```bash
+docker build -t vote-games .
+docker run -d -p 3000:3000 -v vote-games-data:/app/data vote-games
+```
+
+Les votes sont dans `/app/data` : monter un volume dessus pour les garder entre deux redémarrages.

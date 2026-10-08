@@ -66,5 +66,14 @@ app.put("/api/votes/:key", async (req, res) => {
 });
 
 load().then(() => {
-  app.listen(PORT, () => console.log(`Vote festival sur http://localhost:${PORT}`));
+  const server = app.listen(PORT, () => console.log(`Vote festival sur http://localhost:${PORT}`));
+
+  // En PID 1 (Docker), Node n'a pas de gestionnaire SIGTERM par défaut :
+  // on ferme proprement après la dernière écriture en cours.
+  const shutdown = () => {
+    server.close();
+    writeChain.finally(() => process.exit(0));
+  };
+  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", shutdown);
 });
