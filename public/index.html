@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sélection jeux festival</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: one column de cartes-jeux façon tuiles de ludothèque, barre d'action collée en bas */
+:root{
+  --bg:#eef2f1; --surface:#ffffff; --ink:#18262b; --muted:#5d6f73; --line:#d5dfdd;
+  --accent:#d98e04; --accent-soft:#fbefd4; --pick:#0f6b5c; --pick-soft:#dcefe9;
+  --display:"Bricolage Grotesque",ui-rounded,system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111a1c; --surface:#18252a; --ink:#e6eeec; --muted:#93a6a8; --line:#2a3b40;
+  --accent:#f2b134; --accent-soft:#3a2f17; --pick:#4fc2a8; --pick-soft:#173a33; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111a1c; --surface:#18252a; --ink:#e6eeec; --muted:#93a6a8; --line:#2a3b40;
+  --accent:#f2b134; --accent-soft:#3a2f17; --pick:#4fc2a8; --pick-soft:#173a33; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 var(--body)}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:24px 120px}
+h1{font:800 clamp(1.7rem,5vw,2.4rem)/1.05 var(--display);margin:0 0 6px;text-wrap:balance;letter-spacing:-.01em}
+.lede{color:var(--muted);margin:0 0 20px}
+.who{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.who label{font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);width:100%}
+.who input{flex:1;min-width:0;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+button{font:700 .95rem var(--body);border:0;border-radius:8px;padding:10px 16px;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.primary{background:var(--accent);color:#1b1404}
+.primary:disabled{opacity:.45;cursor:default}
+.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.status{font-size:.9rem;color:var(--muted);margin:10px 2px 0;min-height:1.3em}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:22px 0 10px}
+.tools input{flex:1;min-width:160px;font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border-radius:0;background:var(--surface);color:var(--muted);padding:9px 12px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.summary{font-size:.9rem;color:var(--muted);margin:0 2px 10px;font-variant-numeric:tabular-nums}
+.list{display:grid;gap:6px;list-style:none;margin:0;padding:0}
+.game{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.game.mine{border-color:var(--pick);background:var(--pick-soft)}
+.game.locked{cursor:default}
+.game input{width:22px;height:22px;accent-color:var(--pick);margin:0}
+.gtitle{font-weight:700;min-width:0}
+.gyear{color:var(--muted);font-weight:400;font-size:.85rem;margin-left:6px}
+.voters{display:block;font-size:.82rem;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+.count{font:800 1.05rem var(--display);font-variant-numeric:tabular-nums;min-width:2.2em;text-align:center;padding:4px 8px;border-radius:999px;background:var(--bg);color:var(--muted)}
+.count.hot{background:var(--accent-soft);color:var(--ink)}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px))}
+.bar .in{max-width:760px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between}
+.bar span{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.95rem}
+.bar span.over{color:var(--ink);font-weight:700;background:var(--accent-soft);padding:4px 10px;border-radius:6px}
+.empty{color:var(--muted);padding:16px;text-align:center}
+@media (prefers-reduced-motion:no-preference){.game{transition:background .15s,border-color .15s}}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0}
+:root{padding-top:env(safe-area-inset-top,0px)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Quels jeux on prend au festival ?</h1>
+  <p class="lede">Indique ton prénom, coche jusqu'à 30 jeux que tu veux emporter, puis enregistre. Le compteur montre qui veut quoi.</p>
+
+  <form class="who" id="whoForm">
+    <label for="pseudo">Ton prénom ou pseudo</label>
+    <input id="pseudo" autocomplete="nickname" maxlength="40" placeholder="ex. Karine">
+    <button class="ghost" type="submit" id="okBtn">C'est moi</button>
+  </form>
+  <p class="status" id="status">Connexion aux votes…</p>
+
+  <div class="tools">
+    <input id="search" type="search" placeholder="Chercher un jeu">
+    <div class="seg" role="group" aria-label="Tri">
+      <button type="button" id="sortList" aria-pressed="true">Liste</button>
+      <button type="button" id="sortVotes" aria-pressed="false">Par votes</button>
+      <button type="button" id="sortAlpha" aria-pressed="false">A–Z</button>
+    </div>
+  </div>
+  <p class="summary" id="summary"></p>
+  <ul class="list" id="list"></ul>
+</div>
+
+<div class="bar"><div class="in">
+  <span id="barInfo">Saisis ton prénom pour voter</span>
+  <button class="primary" id="saveBtn" disabled>Enregistrer</button>
+</div></div>
+
+<script src="app.js"></script>
+</body>
+</html>
